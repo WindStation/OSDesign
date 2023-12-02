@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -10,11 +11,11 @@ namespace OSDesign.Component {
         public List<Block> Blocks { get; set; } // 记录物理块信息
         public int PageCapacity { get; set; }
         public LinkedList<Block> LoadedList { get; set; } = new();  // 已经加载到内存的页表
-        int numPage, numBlocks;
+        int numPage, numBlock; // 外部要获取这两个值，可以通过两个List的 Count 来获取
 
         public MemoryManage(int numPage, int numBlock, int pageCapacity) {
             this.numPage = numPage;
-            this.numBlocks = numBlock;
+            this.numBlock = numBlock;
             PageTable = new List<Page>();
             for (int i = 0; i < numPage; i++) {
                 PageTable.Add(new(i));
@@ -39,6 +40,65 @@ namespace OSDesign.Component {
             }
 
             return addresses;
+        }
+
+        public void Visit(int processId, int address) {
+            int pageId = address % PageCapacity;
+            // 判断是否命中
+            if (PageTable[pageId].Status == 1) {
+                // 命中
+                HitPage(processId, pageId);
+            } else {
+                // 需要把这一页加载进来
+                LoadPage(processId, pageId);
+            }
+        }
+
+        void HitPage(int processId, int pageId) {
+            // 命中后，将命中的页面重新提到LoadedList的尾部
+            var item = LoadedList.First;
+            while (item != null) {
+                if (item.Value.PageId == pageId) {
+                    LoadedList.Remove(item);
+                    LoadedList.AddLast(item);
+                    break;
+                }
+                item = item.Next;
+            }
+        }
+
+        void LoadPage(int processId, int targetPageId) {
+            int availableId = -1;
+            if (LoadedList.Count < numBlock) {
+                // 还有物理块可用
+                for (int i = 0; i<numBlock; i++) {
+                    if (Blocks[i].Status == 1) {
+                        availableId = i;
+                        break;
+                    }
+                }
+            } else {
+                // 缺页
+                availableId = Replace();
+            }
+            // 将页面载入物理块，修改信息
+            PageTable[targetPageId].Status = 1;
+            PageTable[targetPageId].BlockId = availableId;
+            Blocks[availableId].Status = 0;
+            Blocks[availableId].PageId = targetPageId;
+            // 最后将其加入LoadedList尾部
+            LoadedList.AddLast(Blocks[availableId]);
+        }
+
+        int Replace() {
+            Debug.Assert(LoadedList.First != null);
+            var oldBlock = LoadedList.First.Value;
+            LoadedList.RemoveFirst();
+            // 然后修改页表等信息
+            PageTable[oldBlock.PageId].Status = 0;
+            Blocks[oldBlock.BlockId].Status = 1;
+            // 返回值为可用块的块号
+            return oldBlock.BlockId;
         }
     }
 
@@ -68,7 +128,12 @@ namespace OSDesign.Component {
 
     internal class Test {
         static void Main(string[] args) {
-            Console.WriteLine("Main in DemandPage");
+            Console.WriteLine("------------- Test: MemoryManage::Test -------------");
+            var memory = new MemoryManage(10, 5, 50);
+            var addresses = memory.GenerateAddresses(100);
+            foreach (var address in addresses) {
+                Console.Write(address+", ");
+            }
         }
     }
 
