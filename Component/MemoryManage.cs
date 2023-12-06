@@ -134,6 +134,9 @@ namespace OSDesign.Component {
             foreach (var address in addresses) {
                 Console.Write(address+", ");
             }
+            foreach (var address in addresses) {
+                memory.Visit(0, address);
+            }
         }
     }
 

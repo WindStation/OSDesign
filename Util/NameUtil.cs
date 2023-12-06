@@ -11,4 +11,11 @@ namespace OSDesign.Util {
         public readonly static string INPUT = "input";
         public readonly static string OUTPUT = "output";
     }
+
+    internal class ST {
+        public readonly static string READY = "ready";
+        public readonly static string FINISH = "finish";
+        public readonly static string BLOCK = "block";
+        public readonly static string RUNNING = "running";
+    }
 }

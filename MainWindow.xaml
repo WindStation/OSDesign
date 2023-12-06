@@ -5,8 +5,20 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OSDesign"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="700" Width="1200">
     <Grid>
+        <Label Content="全部进程" HorizontalAlignment="Left" Margin="39,45,0,0" VerticalAlignment="Top" FontSize="16"/>
+        <DataGrid x:Name="AllProcessesGrid" Margin="39,88,803,368" SelectionChanged="DataGrid_SelectionChanged" AutoGenerateColumns="False" >
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="优先级" Binding="{Binding Priority}" Width="*"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Button Content="添加进程" HorizontalAlignment="Left" Margin="309,45,0,0" VerticalAlignment="Top" Height="34" Width="74" Click="Button_Click" FontSize="14"/>
+        <Label Content="当前时间片：" HorizontalAlignment="Left" Margin="461,25,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label x:Name="numTS" Content="" HorizontalAlignment="Left" Margin="591,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.794,0.551" FontSize="20"/>
+        <Button x:Name="nextTsBtn" Content="下一时间片" HorizontalAlignment="Left" Margin="737,28,0,0" VerticalAlignment="Top" Height="29" Width="89" FontSize="14" Click="nextTsBtn_Click"/>
 
     </Grid>
 </Window>

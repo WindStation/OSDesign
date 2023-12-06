@@ -1,11 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>Exe</OutputType>
+    <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>True</UseWPF>
-    <StartupObject>OSDesign.Component.Test</StartupObject>
+    <StartupObject>OSDesign.App</StartupObject>
   </PropertyGroup>
 
 </Project>
