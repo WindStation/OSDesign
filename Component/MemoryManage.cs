@@ -42,16 +42,20 @@ namespace OSDesign.Component {
             return addresses;
         }
 
-        public void Visit(int processId, int address) {
+        public string Visit(int processId, int address) {
             int pageId = address % PageCapacity;
+            string message = "需要访问页面 " + pageId + "。\n";
             // 判断是否命中
             if (PageTable[pageId].Status == 1) {
                 // 命中
                 HitPage(processId, pageId);
+                message += "命中内存。";
             } else {
                 // 需要把这一页加载进来
-                LoadPage(processId, pageId);
+                message += "未命中，";
+                message += LoadPage(processId, pageId);
             }
+            return message;
         }
 
         void HitPage(int processId, int pageId) {
@@ -67,7 +71,8 @@ namespace OSDesign.Component {
             }
         }
 
-        void LoadPage(int processId, int targetPageId) {
+        string LoadPage(int processId, int targetPageId) {
+            string message;
             int availableId = -1;
             if (LoadedList.Count < numBlock) {
                 // 还有物理块可用
@@ -77,9 +82,12 @@ namespace OSDesign.Component {
                         break;
                     }
                 }
+                message = "将所需页面 " + targetPageId + " 加载到空闲的物理块 " + availableId + " 上。";
             } else {
                 // 缺页
-                availableId = Replace();
+                int oldPageId = -1;
+                availableId = Replace(ref oldPageId);
+                message = "且无空闲物理块，按照LRU算法，将物理块 " + availableId + " 上原页面 " + oldPageId + " 调出，并调入该页面。";
             }
             // 将页面载入物理块，修改信息
             PageTable[targetPageId].Status = 1;
@@ -88,11 +96,13 @@ namespace OSDesign.Component {
             Blocks[availableId].PageId = targetPageId;
             // 最后将其加入LoadedList尾部
             LoadedList.AddLast(Blocks[availableId]);
+            return message;
         }
 
-        int Replace() {
+        int Replace(ref int oldPageId) {
             Debug.Assert(LoadedList.First != null);
             var oldBlock = LoadedList.First.Value;
+            oldPageId = oldBlock.PageId;
             LoadedList.RemoveFirst();
             // 然后修改页表等信息
             PageTable[oldBlock.PageId].Status = 0;

@@ -35,7 +35,7 @@ namespace OSDesign {
             InitializeMemory();
             AddProcess();
             AllProcessesGrid.IsReadOnly = true;
-            AllProcessesGrid.ItemsSource = pcb.ProcessList.ToList();
+            AllProcessesGrid.ItemsSource = pcb.ProcessList;
             numTS.Content = timeSlice;
         }
         
@@ -61,7 +61,7 @@ namespace OSDesign {
 
         private void nextTsBtn_Click(object sender, RoutedEventArgs e) {
             timeSlice += 1;
-            pcb.NextTimeSlice();
+            var message = pcb.NextTimeSlice(memory);
             numTS.Content = timeSlice;
         }
 
