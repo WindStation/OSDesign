@@ -8,7 +8,7 @@
         Title="MainWindow" Height="700" Width="1200">
     <Grid>
         <Label Content="全部进程" HorizontalAlignment="Left" Margin="39,45,0,0" VerticalAlignment="Top" FontSize="16"/>
-        <DataGrid x:Name="AllProcessesGrid" Margin="39,88,803,368" SelectionChanged="DataGrid_SelectionChanged" AutoGenerateColumns="False" >
+        <DataGrid x:Name="AllProcessesGrid" Margin="39,88,803,368" SelectionChanged="DataGrid_SelectionChanged" AutoGenerateColumns="False" FontSize="14" >
             <DataGrid.Columns>
                 <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
                 <DataGridTextColumn Header="状态" Binding="{Binding Status}" Width="*"></DataGridTextColumn>
@@ -18,7 +18,21 @@
         <Button Content="添加进程" HorizontalAlignment="Left" Margin="309,45,0,0" VerticalAlignment="Top" Height="34" Width="74" Click="Button_Click" FontSize="14"/>
         <Label Content="当前时间片：" HorizontalAlignment="Left" Margin="461,25,0,0" VerticalAlignment="Top" FontSize="20"/>
         <Label x:Name="numTS" Content="" HorizontalAlignment="Left" Margin="591,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.794,0.551" FontSize="20"/>
-        <Button x:Name="nextTsBtn" Content="下一时间片" HorizontalAlignment="Left" Margin="737,28,0,0" VerticalAlignment="Top" Height="29" Width="89" FontSize="14" Click="nextTsBtn_Click"/>
+        <Button x:Name="nextTsBtn" Content="下一步" HorizontalAlignment="Left" Margin="737,28,0,0" VerticalAlignment="Top" Height="29" Width="89" FontSize="14" Click="nextTsBtn_Click"/>
+        <Label Content="就绪队列" HorizontalAlignment="Left" Margin="39,359,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <Label Content="阻塞队列" HorizontalAlignment="Left" Margin="361,359,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <DataGrid x:Name="ReadyQueueGrid" Margin="39,387,874,25" AutoGenerateColumns="False" FontSize="14">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="优先级" Binding="{Binding Priority}" Width="*"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid x:Name="BlockQueueGrid" Margin="361,390,551,28" AutoGenerateColumns="False" FontSize="14">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
+                <DataGridTextColumn Header="剩余阻塞时间" Binding="{Binding }" Width="*"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
 
     </Grid>
 </Window>

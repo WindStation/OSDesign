@@ -64,5 +64,6 @@ namespace OSDesign {
             pcb.NextTimeSlice();
             numTS.Content = timeSlice;
         }
+
     }
 }
