@@ -17,6 +17,7 @@ using System.Windows.Shapes;
 namespace OSDesign {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
+    /// Already Deprecated
     /// </summary>
     public partial class MainWindow : Window {
         PCB pcb = new();
