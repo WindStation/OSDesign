@@ -19,20 +19,36 @@
         <Label Content="当前时间片：" HorizontalAlignment="Left" Margin="461,25,0,0" VerticalAlignment="Top" FontSize="20"/>
         <Label x:Name="numTS" Content="" HorizontalAlignment="Left" Margin="591,25,0,0" VerticalAlignment="Top" RenderTransformOrigin="0.794,0.551" FontSize="20"/>
         <Button x:Name="nextTsBtn" Content="下一步" HorizontalAlignment="Left" Margin="737,28,0,0" VerticalAlignment="Top" Height="29" Width="89" FontSize="14" Click="nextTsBtn_Click"/>
-        <Label Content="就绪队列" HorizontalAlignment="Left" Margin="39,359,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <Label Content="阻塞队列" HorizontalAlignment="Left" Margin="361,359,0,0" VerticalAlignment="Top" FontSize="14"/>
-        <DataGrid x:Name="ReadyQueueGrid" Margin="39,387,874,25" AutoGenerateColumns="False" FontSize="14">
+        <Label Content="就绪队列 1 → 2 → 3" HorizontalAlignment="Left" Margin="102,368,0,0" VerticalAlignment="Top" FontSize="14" Width="179"/>
+        <Label Content="阻塞队列" HorizontalAlignment="Left" Margin="427,354,0,0" VerticalAlignment="Top" FontSize="14"/>
+        <DataGrid x:Name="ReadyGrid1" Margin="88,412,1026,48" AutoGenerateColumns="False" FontSize="14">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
-                <DataGridTextColumn Header="优先级" Binding="{Binding Priority}" Width="*"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
-        <DataGrid x:Name="BlockQueueGrid" Margin="361,390,551,28" AutoGenerateColumns="False" FontSize="14">
+        <DataGrid x:Name="ReadyGrid2" Margin="192,410,919,49" AutoGenerateColumns="False" FontSize="14">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid x:Name="ReadyGrid3" Margin="295,410,817,49" FontSize="14">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+        <DataGrid x:Name="BlockQueueGrid" Margin="427,391,485,27" AutoGenerateColumns="False" FontSize="14">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="进程号" Binding="{Binding Id}" Width="*"></DataGridTextColumn>
                 <DataGridTextColumn Header="剩余阻塞时间" Binding="{Binding }" Width="*"></DataGridTextColumn>
             </DataGrid.Columns>
         </DataGrid>
+        <Label x:Name="MessageBox" HorizontalAlignment="Left" Margin="491,103,0,0" VerticalAlignment="Top" Height="111" Width="335" FontSize="15">
+            <TextBlock TextWrapping="Wrap">此处会显示每个时间片执行的命令，以及访问的命令、页面情况等详细信息。</TextBlock>
+        </Label>
+        <Label Content="↑" HorizontalAlignment="Left" Margin="116,637,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label Content="↑" HorizontalAlignment="Left" Margin="226,637,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label Content="↑" HorizontalAlignment="Left" Margin="331,637,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label Content="队尾" HorizontalAlignment="Left" Margin="23,600,0,0" VerticalAlignment="Top"/>
 
     </Grid>
 </Window>

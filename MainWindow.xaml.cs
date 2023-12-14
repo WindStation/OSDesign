@@ -1,4 +1,5 @@
 ﻿using OSDesign.Component;
+using OSDesign.Util;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -30,6 +31,16 @@ namespace OSDesign {
             AllProcessesGrid.ItemsSource = pcb.ProcessList;
         }
 
+        private void RefreshReady() {
+            // 刷新“就绪队列”，三个同时刷新
+            ReadyGrid1.ItemsSource = null;
+            ReadyGrid1.ItemsSource = pcb.ReadyQueue1;
+            ReadyGrid2.ItemsSource = null;
+            ReadyGrid2.ItemsSource = pcb.ReadyQueue2;
+            ReadyGrid3.ItemsSource = null;
+            ReadyGrid3.ItemsSource = pcb.ReadyQueue3;
+        }
+
         public MainWindow() {
             InitializeComponent();
             InitializeMemory();
@@ -45,10 +56,15 @@ namespace OSDesign {
         }
 
         private void AddProcess() {
-            var addresses = memory.GenerateAddresses(20);
-            // TODO
-            pcb.AddProcess(new(autoGenId++, addresses, new()));
+            var cmdGen = CmdGenUtil.Instance;
+            var commandModel = cmdGen.COMMANDS[autoGenId % cmdGen.COMMANDS.Count];
+
+            var commands = new List<string>(commandModel.Commands);
+            var addresses = memory.GenerateAddresses(commandModel.AddressCount);
+
+            pcb.AddProcess(new(autoGenId++, addresses, commands));
             RefreshAll();
+            RefreshReady();
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -62,7 +78,10 @@ namespace OSDesign {
         private void nextTsBtn_Click(object sender, RoutedEventArgs e) {
             timeSlice += 1;
             var message = pcb.NextTimeSlice(memory);
+            MessageBox.Content = message;
             numTS.Content = timeSlice;
+            RefreshAll();
+            RefreshReady();
         }
 
     }
