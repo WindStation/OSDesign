@@ -50,7 +50,10 @@ namespace OSDesign {
             PageGrid.ItemsSource = null;
             PageGrid.ItemsSource = memory.PageTable;
         }
-
+        private void RefreshLoaded() {
+            LoadedPageGrid.ItemsSource = null;
+            LoadedPageGrid.ItemsSource = memory.LoadedList;
+        }
         public MainWindow() {
             InitializeComponent();
             InitializeMemory();
@@ -105,6 +108,7 @@ namespace OSDesign {
             RefreshReady();
             RefreshBlock();
             RefreshPageTable();
+            RefreshLoaded();
         }
 
     }
