@@ -34,11 +34,21 @@ namespace OSDesign {
         private void RefreshReady() {
             // 刷新“就绪队列”，三个同时刷新
             ReadyGrid1.ItemsSource = null;
-            ReadyGrid1.ItemsSource = pcb.ReadyQueue1;
+            ReadyGrid1.ItemsSource = pcb.ReadyQueue1.Reverse();
             ReadyGrid2.ItemsSource = null;
-            ReadyGrid2.ItemsSource = pcb.ReadyQueue2;
+            ReadyGrid2.ItemsSource = pcb.ReadyQueue2.Reverse();
             ReadyGrid3.ItemsSource = null;
-            ReadyGrid3.ItemsSource = pcb.ReadyQueue3;
+            ReadyGrid3.ItemsSource = pcb.ReadyQueue3.Reverse();
+        }
+
+        private void RefreshBlock() {
+            // 刷新阻塞队列
+            BlockQueueGrid.ItemsSource = null;
+            BlockQueueGrid.ItemsSource= pcb.BlockQueue.Reverse();
+        }
+        private void RefreshPageTable() {
+            PageGrid.ItemsSource = null;
+            PageGrid.ItemsSource = memory.PageTable;
         }
 
         public MainWindow() {
@@ -47,11 +57,21 @@ namespace OSDesign {
             AddProcess();
             AllProcessesGrid.IsReadOnly = true;
             AllProcessesGrid.ItemsSource = pcb.ProcessList;
+            // 设置只读
+            ReadyGrid1.IsReadOnly = true;
+            ReadyGrid2.IsReadOnly = true;
+            ReadyGrid3.IsReadOnly = true;
+
+            BlockQueueGrid.IsReadOnly= true;
+
+            PageGrid.IsReadOnly = true;
+            PageGrid.ItemsSource = memory.PageTable;
             numTS.Content = timeSlice;
         }
         
         private void InitializeMemory() {
             // 初始化存储管理模块
+            // 设置为：10页面，5物理块，每个页面容量为50地址
             memory = new(10, 5, 50);
         }
 
@@ -78,10 +98,13 @@ namespace OSDesign {
         private void nextTsBtn_Click(object sender, RoutedEventArgs e) {
             timeSlice += 1;
             var message = pcb.NextTimeSlice(memory);
-            MessageBox.Content = message;
+            //MessageBox.Content = message;
+            MessageBoxBlock.Text = message;
             numTS.Content = timeSlice;
             RefreshAll();
             RefreshReady();
+            RefreshBlock();
+            RefreshPageTable();
         }
 
     }

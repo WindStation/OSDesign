@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace OSDesign.Component {
     internal class MemoryManage {
@@ -29,11 +30,15 @@ namespace OSDesign.Component {
         public List<int> GenerateAddresses(int totalAddresses) {
             var addresses = new List<int>();
             var random = new Random();
+            
             // 先生成50%随机地址
             for (int i = 0; i < totalAddresses / 2; i++) {
                 addresses.Add(random.Next(0, numPage * PageCapacity));
             }
             // 后50%为循环连续地址
+            if (totalAddresses % 2 != 0) {
+                totalAddresses += 1;
+            }
             int start = random.Next(0, numPage * PageCapacity);
             for (int i = 0; i < totalAddresses / 2; i++) {
                 addresses.Add((start + i) % (numPage * PageCapacity));
@@ -43,7 +48,7 @@ namespace OSDesign.Component {
         }
 
         public string Visit(int processId, int address) {
-            int pageId = address % PageCapacity;
+            int pageId = address / PageCapacity;
             string message = "需要访问页面 " + pageId + "。\n";
             // 判断是否命中
             if (PageTable[pageId].Status == 1) {
@@ -117,6 +122,16 @@ namespace OSDesign.Component {
         public int BlockId { get; set; }// 物理块号
         public int Status { get; set; } // 0为未装入内存，1为装入
         public bool Modify { get; set; } // 是否更改过 
+        public string DisplayBlockId { // 用于界面上展示的，只有当已经装入物理块时，才显示信息
+            get {
+                return Status == 1 ? Convert.ToString(BlockId) : "";
+            }
+        }
+        public SolidColorBrush DisplayColor {
+            get {
+                return Status == 1 ? Brushes.DarkGreen : Brushes.OrangeRed;
+            }
+        }
 
         public Page(int id) {
             PageId = id;
@@ -140,7 +155,7 @@ namespace OSDesign.Component {
         static void Main(string[] args) {
             Console.WriteLine("------------- Test: MemoryManage::Test -------------");
             var memory = new MemoryManage(10, 5, 50);
-            var addresses = memory.GenerateAddresses(100);
+            var addresses = memory.GenerateAddresses(4);
             foreach (var address in addresses) {
                 Console.Write(address+", ");
             }
