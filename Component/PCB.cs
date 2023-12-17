@@ -56,7 +56,7 @@ namespace OSDesign.Component {
             process.RemainingTimeSlice = 12;
             ReadyQueue3.AddFirst(process);
         }
-        public string NextTimeSlice(MemoryManage memory) {
+        public string NextTimeSlice(ref int targetPid) {
             // 这里做进程执行的事情，要负责进程阻塞或访问内存，并调整时间片数量，时间到未做完
             // 每次执行一条指令，就从CommandList中移除这条已执行的指令
             // 考虑一种特殊情况：当最后一条指令是IO指令时，先移除指令（此时CmdList为空）再执行阻塞，那么就需要阻塞结束的检查功能注意这一特殊情况
@@ -80,6 +80,9 @@ namespace OSDesign.Component {
                 }
                 targetProcess = ProcessList[pid];
             }
+
+            // 以引用参数返回当前一步执行的pid
+            targetPid = pid;
             
             string message = "";    // 返回给界面的信息
             targetProcess.Status = ST.RUNNING;  // 修改状态为执行中
@@ -114,7 +117,7 @@ namespace OSDesign.Component {
             // 取完地址就pop掉
             targetProcess.AddressSequence.RemoveAt(0);
             message = "进程 " + pid + " 执行指令 " + nextCommand + " " + nextAddress + "，\n访问内存：";
-            message += memory.Visit(pid, nextAddress);
+            message += targetProcess.memory.Visit(pid, nextAddress);
             // 把可用时间片减一
             targetProcess.RemainingTimeSlice -= 1;
             // 然后判断一下执行完毕没
@@ -218,6 +221,7 @@ namespace OSDesign.Component {
         public string Status { get; set; }
         public int RemainingTimeSlice { get; set; }
         public int RemainingBlockTime { get; set; }
+        public MemoryManage memory { get; set; }    // 为每个进程配备一个页表
         public int PrevQueue { get; set; } // 这是一个标识，当进程被调度执行时，会记录它是从第几个就绪队列被调出去的
         public SolidColorBrush StatusColor {    // 用于在前端显示状态颜色的
             get {
@@ -239,6 +243,7 @@ namespace OSDesign.Component {
             CommandSequence = commandSequence;
             Status = ST.READY;
             RemainingBlockTime = -1;    // 表示初始未被阻塞
+            memory = new(10, 5, 50);
         }
     }
 }

@@ -21,7 +21,7 @@ namespace OSDesign {
     /// </summary>
     public partial class MainWindow : Window {
         PCB pcb = new();
-        MemoryManage memory;
+        //MemoryManage memory;
         int autoGenId = 0;
         int timeSlice = 0;
 
@@ -46,17 +46,30 @@ namespace OSDesign {
             BlockQueueGrid.ItemsSource = null;
             BlockQueueGrid.ItemsSource= pcb.BlockQueue.Reverse();
         }
-        private void RefreshPageTable() {
+        private void RefreshPageTable(int pid) {
             PageGrid.ItemsSource = null;
-            PageGrid.ItemsSource = memory.PageTable;
+            if (pid == -1) {
+                PageTableTitle.Content = "当前没有正在运行的进程。";
+                return;
+            }
+            PageGrid.ItemsSource = pcb.ProcessList[pid].memory.PageTable;
+            // 刷新标题
+            PageTableTitle.Content = "页表 #" + pid;
         }
-        private void RefreshLoaded() {
+        private void RefreshLoaded(int pid) {
             LoadedPageGrid.ItemsSource = null;
-            LoadedPageGrid.ItemsSource = memory.LoadedList;
+            if (pid == -1) {
+                return;
+            }
+            LoadedPageGrid.ItemsSource = pcb.ProcessList[pid].memory.LoadedList;
+        }
+        private void RefreshMemoryDisplay() {
+            MemoryDisplay.ItemsSource = null;
+            MemoryDisplay.ItemsSource = MemoryManage.Blocks;
         }
         public MainWindow() {
             InitializeComponent();
-            InitializeMemory();
+            //InitializeMemory();
             AddProcess();
             AllProcessesGrid.IsReadOnly = true;
             AllProcessesGrid.ItemsSource = pcb.ProcessList;
@@ -68,26 +81,27 @@ namespace OSDesign {
             BlockQueueGrid.IsReadOnly= true;
 
             PageGrid.IsReadOnly = true;
-            PageGrid.ItemsSource = memory.PageTable;
+            //PageGrid.ItemsSource = memory.PageTable;
             numTS.Content = timeSlice;
         }
         
-        private void InitializeMemory() {
-            // 初始化存储管理模块
-            // 设置为：10页面，5物理块，每个页面容量为50地址
-            memory = new(10, 5, 50);
-        }
+        //private void InitializeMemory() {
+        //    // 初始化存储管理模块
+        //    // 设置为：10页面，5物理块，每个页面容量为50地址
+        //    memory = new(10, 5, 50);
+        //}
 
         private void AddProcess() {
             var cmdGen = CmdGenUtil.Instance;
             var commandModel = cmdGen.COMMANDS[autoGenId % cmdGen.COMMANDS.Count];
 
             var commands = new List<string>(commandModel.Commands);
-            var addresses = memory.GenerateAddresses(commandModel.AddressCount);
+            var addresses = MemoryManage.GenerateAddresses(commandModel.AddressCount);
 
             pcb.AddProcess(new(autoGenId++, addresses, commands));
             RefreshAll();
             RefreshReady();
+            RefreshMemoryDisplay();
         }
 
         private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
@@ -100,15 +114,17 @@ namespace OSDesign {
 
         private void nextTsBtn_Click(object sender, RoutedEventArgs e) {
             timeSlice += 1;
-            var message = pcb.NextTimeSlice(memory);
+            int currentPid = -1;    // 用于记录这个时间片执行了哪个进程
+            var message = pcb.NextTimeSlice(ref currentPid);
             //MessageBox.Content = message;
             MessageBoxBlock.Text = message;
             numTS.Content = timeSlice;
             RefreshAll();
             RefreshReady();
             RefreshBlock();
-            RefreshPageTable();
-            RefreshLoaded();
+            RefreshPageTable(currentPid);
+            RefreshLoaded(currentPid);
+            RefreshMemoryDisplay();
         }
 
     }
