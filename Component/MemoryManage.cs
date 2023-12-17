@@ -9,10 +9,11 @@ using System.Windows.Media;
 namespace OSDesign.Component {
     internal class MemoryManage {
         public List<Page> PageTable { get; set; }   // 页表
-        public List<Block> Blocks { get; set; } // 记录物理块信息
+        public static List<Block> Blocks { get; set; } = new List<Block>(); // 记录物理块信息
         public int PageCapacity { get; set; }
         public LinkedList<Block> LoadedList { get; set; } = new();  // 已经加载到内存的页表
         int numPage, numBlock; // 外部要获取这两个值，可以通过两个List的 Count 来获取
+        int startBlockId;   // 记录给该进程分配的物理块的起始，采用连续分配
 
         public MemoryManage(int numPage, int numBlock, int pageCapacity) {
             this.numPage = numPage;
@@ -21,16 +22,20 @@ namespace OSDesign.Component {
             for (int i = 0; i < numPage; i++) {
                 PageTable.Add(new(i));
             }
-            Blocks = new List<Block>();
+            startBlockId = Blocks.Count;    // 记录给这个进程分配的物理块的起始
             for (int i = 0; i < numBlock; i++) {
-                Blocks.Add(new(i));
+                Blocks.Add(new(startBlockId + i));
             }
             PageCapacity = pageCapacity;
         }
-        public List<int> GenerateAddresses(int totalAddresses) {
+
+        public static List<int> GenerateAddresses(int totalAddresses) {
             var addresses = new List<int>();
             var random = new Random();
-            
+            // 暂时用固定的
+            var numPage = 10;
+            var PageCapacity = 50;
+
             // 先生成50%随机地址
             for (int i = 0; i < totalAddresses / 2; i++) {
                 addresses.Add(random.Next(0, numPage * PageCapacity));
@@ -81,9 +86,9 @@ namespace OSDesign.Component {
             int availableId = -1;
             if (LoadedList.Count < numBlock) {
                 // 还有物理块可用
-                for (int i = 0; i<numBlock; i++) {
-                    if (Blocks[i].Status == 1) {
-                        availableId = i;
+                for (int i = 0; i < numBlock; i++) {
+                    if (Blocks[i + startBlockId].Status == 1) {
+                        availableId = i + startBlockId;
                         break;
                     }
                 }
@@ -144,6 +149,22 @@ namespace OSDesign.Component {
         public int BlockId { get; set; }    // 物理块号
         public int PageId { get; set; } // 装入该块的页号
         public int Status { get; set; } // 1为空闲，0为已装载页面
+        public string DisplayStatus {   // 供展示用，若空闲显示"物理块号 | —"，不空闲则显示装入的页
+            get {
+                if (Status == 1) {
+                    return BlockId + " | —";
+                }
+                return BlockId + " | " + PageId;
+            }
+        }
+        public SolidColorBrush DisplayColor {   // 供展示用，设置显示的颜色
+            get {
+                if (Status==1) {
+                    return Brushes.DarkGreen;
+                }
+                return Brushes.OrangeRed;
+            }
+        }
 
         public Block(int blockId) {
             BlockId = blockId;
@@ -155,9 +176,9 @@ namespace OSDesign.Component {
         static void Main(string[] args) {
             Console.WriteLine("------------- Test: MemoryManage::Test -------------");
             var memory = new MemoryManage(10, 5, 50);
-            var addresses = memory.GenerateAddresses(4);
+            var addresses = MemoryManage.GenerateAddresses(4);
             foreach (var address in addresses) {
-                Console.Write(address+", ");
+                Console.Write(address + ", ");
             }
             foreach (var address in addresses) {
                 memory.Visit(0, address);

@@ -5,11 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OSDesign"
         mc:Ignorable="d"
-        Title="MainWindow" Height="730" Width="1200" ResizeMode="CanResizeWithGrip"
+        Title="MainWindow" Height="750" Width="1500" ResizeMode="CanResizeWithGrip"
         >
 
     <Viewbox Stretch="Uniform">
-        <Grid Height="714.76" Width="1200">
+        <Grid Height="715" Width="1466">
             <Line Visibility="Hidden" X1="0" X2="930" Y1="350" Y2="350" Stroke="Gray" StrokeStartLineCap="Round" StrokeEndLineCap="Round" StrokeThickness="2" HorizontalAlignment="Left" VerticalAlignment="Top">
                 <Line.Effect>
                     <DropShadowEffect BlurRadius="10"/>
@@ -225,7 +225,7 @@
                             <DataGridTextColumn Header="页号" Binding="{Binding PageId}" Width="*"/>
                         </DataGrid.Columns>
                     </DataGrid>
-                    <Label Content="页表" HorizontalAlignment="Left" Margin="28,0,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
+                    <Label Content="页表" x:Name="PageTableTitle" HorizontalAlignment="Left" Margin="16,0,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
                     <Label Content="已载入内存的页面" HorizontalAlignment="Left" Margin="53,397,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
                     <Label Content="最近访问" HorizontalAlignment="Left" Margin="0,590,0,0" VerticalAlignment="Top" Height="28" Width="74" FontSize="14" FontWeight="Bold"/>
                     <Label Content="↓" HorizontalAlignment="Left" Margin="20,518,0,0" VerticalAlignment="Top" FontSize="48" Height="80"/>
@@ -234,6 +234,40 @@
 
                 </Grid>
             </Border>
+            <Border HorizontalAlignment="Left" VerticalAlignment="Top" Width="249" Height="669" 
+                    BorderThickness="2" BorderBrush="Gray" CornerRadius="20" Margin="1207,32,0,0">
+                <Grid Margin="10,10,10,10">
+                    <Label Content="内存情况" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="16" FontWeight="Bold" Margin="10,10,0,0"/>
+                    <ItemsControl x:Name="MemoryDisplay" HorizontalAlignment="Center" VerticalAlignment="Top" Width="225" Height="519" Margin="0,104,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border BorderBrush="Gray" BorderThickness="1" Width="45" Padding="0,10,0,10">
+                                    <Grid>
+                                        <TextBlock Text="{Binding DisplayStatus}" >
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="{Binding DisplayColor}"></Setter>
+                                                    <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                                                    <Setter Property="FontWeight" Value="SemiBold"></Setter>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
+                                        <!-- Add more TextBlocks for other properties if needed -->
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <Label Content="每格为一个物理块" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="10,45,0,0"/>
+                    <Label Content="块号 | 页号" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" Margin="132,45,0,0" FontWeight="Bold"/>
+                </Grid>
+            </Border>
+
 
         </Grid>
     </Viewbox>
