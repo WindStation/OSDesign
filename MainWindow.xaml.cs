@@ -104,8 +104,14 @@ namespace OSDesign {
             RefreshMemoryDisplay();
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e) {
-
+        private void AllProcessesGrid_MouseDoubleClick(object sender, MouseButtonEventArgs e) {
+            var row = ItemsControl.ContainerFromElement((DataGrid)sender, e.OriginalSource as DependencyObject) as DataGridRow;
+            if(row != null) {
+                Process? targetProcess = row.Item as Process;
+                if (targetProcess != null) {
+                    new ProcessDetail(targetProcess).Show();
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e) {
@@ -127,5 +133,6 @@ namespace OSDesign {
             RefreshMemoryDisplay();
         }
 
+        
     }
 }

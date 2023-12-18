@@ -83,7 +83,7 @@ namespace OSDesign.Component {
 
             // 以引用参数返回当前一步执行的pid
             targetPid = pid;
-            
+
             string message = "";    // 返回给界面的信息
             targetProcess.Status = ST.RUNNING;  // 修改状态为执行中
             // 取出其下一步的指令
@@ -236,6 +236,20 @@ namespace OSDesign.Component {
                 }
             }
         }
+        public List<DisplayCmdItem> DisplayDetail { // 这个是用来在详情页展示这个进程的剩余指令和地址的
+            get {
+                var result = new List<DisplayCmdItem>();
+                
+                int addressPtr = 0; // 因为IO操作是没有地址的，因此设置一个下标
+                                    // 指向现在指令取到第几个地址
+                                    // 只有read和write指令要对应地址，IO都不用对应地址
+                foreach (var cmd in CommandSequence) {
+                    string address = (cmd == Cmd.INPUT || cmd == Cmd.OUTPUT) ? "" : Convert.ToString(AddressSequence[addressPtr++]);
+                    result.Add(new(cmd, address));
+                }
+                return result;
+            }
+        }
 
         public Process(int id, List<int> addressSequence, List<string> commandSequence) {
             Id = id;
@@ -244,6 +258,15 @@ namespace OSDesign.Component {
             Status = ST.READY;
             RemainingBlockTime = -1;    // 表示初始未被阻塞
             memory = new(10, 5, 50);
+        }
+    }
+
+    internal class DisplayCmdItem {
+        public string Command { get; set; }
+        public string Address { get; set; }
+        public DisplayCmdItem(string command, string address) {
+            Command = command;
+            Address = address;
         }
     }
 }

@@ -16,7 +16,7 @@
                 </Line.Effect>
             </Line>
             <Label Content="全部进程" HorizontalAlignment="Left" Margin="170,42,0,0" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
-            <DataGrid x:Name="AllProcessesGrid" GridLinesVisibility="None" Margin="39,88,0,0" SelectionChanged="DataGrid_SelectionChanged" AutoGenerateColumns="False" 
+            <DataGrid x:Name="AllProcessesGrid" GridLinesVisibility="None" Margin="39,88,0,0" MouseDoubleClick="AllProcessesGrid_MouseDoubleClick" AutoGenerateColumns="False" 
                       FontSize="14" RowHeaderWidth="0" HorizontalAlignment="Left" VerticalAlignment="Top" Height="248" Width="344" ScrollViewer.HorizontalScrollBarVisibility="Hidden" >
 
                 <DataGrid.RowStyle>

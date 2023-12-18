@@ -1,0 +1,99 @@
+﻿<Window x:Class="OSDesign.ProcessDetail"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:OSDesign"
+        mc:Ignorable="d"
+        Title="ProcessDetail" Height="650" Width="900">
+    <Viewbox Stretch="Uniform" Margin="0,0,0,0">
+        <Grid Height="546" Width="761">
+            <Label x:Name="DetailTitle" Content="进程信息" Margin="21,17,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
+            <Label Content="进程号：" HorizontalAlignment="Left" Margin="102,59,0,0" VerticalAlignment="Top" Width="64" FontSize="16"/>
+            <Label x:Name="PidText" Content="0" HorizontalAlignment="Left" Margin="171,59,0,0" VerticalAlignment="Top" Width="41" FontWeight="Bold" FontSize="16"/>
+            <Label Content="状态：" HorizontalAlignment="Left" Margin="257,59,0,0" VerticalAlignment="Top" Width="56" FontSize="16"/>
+            <Label x:Name="StatusText" Content="ready" HorizontalAlignment="Left" Margin="313,59,0,0" VerticalAlignment="Top" Width="90" FontWeight="Bold" FontSize="16"/>
+            <Label Content="尚未执行的指令和地址" HorizontalAlignment="Left" Margin="99,110,0,0" VerticalAlignment="Top" Width="185" FontWeight="Bold" FontSize="16"/>
+            <DataGrid x:Name="DetailCmdTable" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="118,181,0,0" Height="289" Width="230" FontSize="14" 
+                      AutoGenerateColumns="False" RowHeaderWidth="0" GridLinesVisibility="None" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <DataGrid.RowStyle>
+                    <Style TargetType="DataGridRow">
+                        <Setter Property="Height" Value="30"></Setter>
+                        <Setter Property="BorderBrush" Value="Gray"></Setter>
+                        <Setter Property="BorderThickness" Value="0.5"></Setter>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="DataGridCell">
+                        <Setter Property="VerticalAlignment" Value="Center"></Setter>
+                        <Setter Property="HorizontalAlignment" Value="Center"></Setter>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="DataGridColumnHeader">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"></Setter>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="指令" Binding="{Binding Command}" Width="*"></DataGridTextColumn>
+                    <DataGridTextColumn Header="地址" Binding="{Binding Address}" Width="*"></DataGridTextColumn>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Line Stroke="Gray" StrokeThickness="2" X1="430" X2="430" Y1="50" Y2="500" StrokeStartLineCap="Round" StrokeEndLineCap="Round"></Line>
+            <Label x:Name="PageTitle" Content="当前进程页表" Margin="488,29,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="18" FontWeight="Bold"/>
+            <DataGrid x:Name="PageGrid" GridLinesVisibility="None" HorizontalAlignment="Left" VerticalAlignment="Top" AutoGenerateColumns="False"
+                RowHeaderWidth="0" Width="207" Height="239" Margin="506,81,0,0" ScrollViewer.HorizontalScrollBarVisibility="Hidden">
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="BorderBrush" Value="Gray"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+                        <Setter Property="Foreground" Value="{Binding DisplayColor}"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="页号" Binding="{Binding PageId}" Width="*"/>
+                    <DataGridTextColumn Header="物理块号" Binding="{Binding DisplayBlockId}" Width="*"/>
+                </DataGrid.Columns>
+
+            </DataGrid>
+            <DataGrid x:Name="LoadedPageGrid" HorizontalAlignment="Left" VerticalAlignment="Top" AutoGenerateColumns="False" Width="133" Height="186" Margin="560,344,0,0"
+                GridLinesVisibility="None" FontSize="14" ScrollViewer.HorizontalScrollBarVisibility="Hidden" RowHeaderWidth="0">
+                <DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>
+                <DataGrid.RowStyle>
+                    <Style TargetType="{x:Type DataGridRow}">
+                        <Setter Property="Height" Value="30"/>
+                        <Setter Property="BorderBrush" Value="Gray"/>
+                        <Setter Property="BorderThickness" Value="0.5"/>
+                        <Setter Property="Foreground" Value="{Binding DisplayColor}"/>
+                    </Style>
+                </DataGrid.RowStyle>
+                <DataGrid.CellStyle>
+                    <Style TargetType="{x:Type DataGridCell}">
+                        <Setter Property="VerticalAlignment" Value="Center"/>
+                        <Setter Property="HorizontalAlignment" Value="Center"/>
+                    </Style>
+                </DataGrid.CellStyle>
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="页号" Binding="{Binding PageId}" Width="*"/>
+                </DataGrid.Columns>
+            </DataGrid>
+            <Label Content="最近访问" HorizontalAlignment="Left" Margin="493,498,0,0" VerticalAlignment="Top" Height="28" Width="74" FontSize="14" FontWeight="Bold"/>
+            <Label Content="  最久&#xA;未访问" HorizontalAlignment="Left" Margin="502,371,0,0" VerticalAlignment="Top" Height="53" Width="53" FontSize="14" FontWeight="Bold"/>
+            <Label Content="↑" HorizontalAlignment="Left" Margin="513,411,0,0" VerticalAlignment="Top" FontSize="48" Height="80"/>
+            <Label Content="↓" HorizontalAlignment="Left" Margin="513,424,0,0" VerticalAlignment="Top" FontSize="48" Height="80"/>
+
+        </Grid>
+
+    </Viewbox>
+</Window>
